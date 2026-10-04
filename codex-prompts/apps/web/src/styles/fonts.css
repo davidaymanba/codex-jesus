@@ -1,0 +1,109 @@
+/*
+ * Self-hosted, subset fonts (public/fonts, SIL OFL 1.1: see the OFL-*.txt files there).
+ * Static instances of only the weights the design uses, cut to the scripts each family
+ * serves: Arabic files hold U+0600–06FF (+ supplement), Latin files the Latin-1 range. The
+ * layout preloads the locale's body and heading files (src/lib/fonts.ts).
+ *
+ * Inter and Archivo stand in for the licensed Neue Montreal and Morrison; swapping them means
+ * new files here and nothing else. Family names are prefixed so a locally installed copy is
+ * never picked up instead. File names carry a version (`.v1`) because they are cached as
+ * immutable: change the version when a file changes.
+ */
+
+@font-face {
+  font-family: 'Codex Inter';
+  src: url('/fonts/inter-latin-300.v1.woff2') format('woff2');
+  font-weight: 300;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Codex Inter';
+  src: url('/fonts/inter-latin-500.v1.woff2') format('woff2');
+  font-weight: 500;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Codex Inter';
+  src: url('/fonts/inter-latin-700.v1.woff2') format('woff2');
+  font-weight: 700;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Codex Archivo';
+  src: url('/fonts/archivo-latin-800.v1.woff2') format('woff2');
+  font-weight: 800;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Codex Noto Sans Arabic';
+  src: url('/fonts/noto-sans-arabic-300.v1.woff2') format('woff2');
+  font-weight: 300;
+  font-display: swap;
+  unicode-range: U+0600-06FF, U+0750-077F, U+200C-200F, U+2010-2011;
+}
+@font-face {
+  font-family: 'Codex Noto Sans Arabic';
+  src: url('/fonts/noto-sans-arabic-500.v1.woff2') format('woff2');
+  font-weight: 500;
+  font-display: swap;
+  unicode-range: U+0600-06FF, U+0750-077F, U+200C-200F, U+2010-2011;
+}
+@font-face {
+  font-family: 'Codex Rubik';
+  src: url('/fonts/rubik-arabic-500.v1.woff2') format('woff2');
+  font-weight: 500;
+  font-display: swap;
+  unicode-range: U+0600-06FF, U+0750-077F, U+200C-200F, U+2010-2011;
+}
+@font-face {
+  font-family: 'Codex Rubik';
+  src: url('/fonts/rubik-arabic-700.v1.woff2') format('woff2');
+  font-weight: 700;
+  font-display: swap;
+  unicode-range: U+0600-06FF, U+0750-077F, U+200C-200F, U+2010-2011;
+}
+
+/* Metric-matched local fallbacks (values from next/font's calculations), so the swap to the
+   web font does not shift the layout. The Arabic ones are limited to Arabic too, so Latin
+   words inside Arabic copy fall through to the Latin stack. */
+@font-face {
+  font-family: 'Codex Inter Fallback';
+  src: local('Arial');
+  ascent-override: 90.44%;
+  descent-override: 22.52%;
+  line-gap-override: 0%;
+  size-adjust: 107.12%;
+}
+@font-face {
+  font-family: 'Codex Archivo Fallback';
+  src: local('Arial');
+  ascent-override: 88.96%;
+  descent-override: 21.28%;
+  line-gap-override: 0%;
+  size-adjust: 98.7%;
+}
+@font-face {
+  font-family: 'Codex Noto Sans Arabic Fallback';
+  src: local('Arial');
+  ascent-override: 113.22%;
+  descent-override: 60.81%;
+  line-gap-override: 0%;
+  size-adjust: 121.35%;
+  unicode-range: U+0600-06FF, U+0750-077F, U+200C-200F, U+2010-2011;
+}
+@font-face {
+  font-family: 'Codex Rubik Fallback';
+  src: local('Arial');
+  ascent-override: 89.06%;
+  descent-override: 23.81%;
+  line-gap-override: 0%;
+  size-adjust: 104.98%;
+  unicode-range: U+0600-06FF, U+0750-077F, U+200C-200F, U+2010-2011;
+}
+
+:root {
+  --font-latin-body: 'Codex Inter', 'Codex Inter Fallback';
+  --font-latin-showcase: 'Codex Archivo', 'Codex Archivo Fallback';
+  --font-arabic-body: 'Codex Noto Sans Arabic', 'Codex Noto Sans Arabic Fallback';
+  --font-arabic-heading: 'Codex Rubik', 'Codex Rubik Fallback';
+}

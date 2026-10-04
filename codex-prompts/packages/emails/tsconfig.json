@@ -1,0 +1,9 @@
+{
+  "extends": "@codex/config/tsconfig/library.json",
+  "compilerOptions": {
+    "lib": ["ES2023", "DOM"],
+    "jsx": "react-jsx",
+    "types": ["node"]
+  },
+  "include": ["src", "*.config.ts"]
+}

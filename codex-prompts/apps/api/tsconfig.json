@@ -1,0 +1,9 @@
+{
+  "extends": "@codex/config/tsconfig/node.json",
+  "compilerOptions": {
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+  },
+  "include": ["src", "prisma", "scripts", "*.config.ts"]
+}

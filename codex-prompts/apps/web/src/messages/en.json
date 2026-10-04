@@ -1,0 +1,766 @@
+{
+  "metadata": {
+    "siteName": "Codex",
+    "defaultTitle": "Codex: software, branding and marketing that grow your business",
+    "defaultDescription": "Codex is a digital agency that builds e-commerce stores, platforms and AI automations, shapes brand identities and runs marketing that brings results."
+  },
+  "a11y": {
+    "skipToContent": "Skip to main content",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
+    "mainNavigation": "Main navigation",
+    "footerNavigation": "Footer navigation",
+    "home": "Codex home page",
+    "close": "Close"
+  },
+  "nav": {
+    "home": "Home",
+    "services": "Services",
+    "allServices": "All services",
+    "portfolio": "Portfolio",
+    "blog": "Blog",
+    "about": "About",
+    "contact": "Contact",
+    "requestQuote": "Request a Quote"
+  },
+  "serviceCategories": {
+    "DEVELOPMENT": "Software Development",
+    "BRANDING": "Branding",
+    "MARKETING": "Marketing"
+  },
+  "serviceCategoryDescriptions": {
+    "DEVELOPMENT": "Stores, platforms, ERP and CRM systems, AI agents and automation.",
+    "BRANDING": "Identities, logos and visual systems people remember.",
+    "MARKETING": "Social, content, ads and SEO that bring measurable growth."
+  },
+  "languageSwitcher": {
+    "label": "Change language",
+    "ar": "العربية",
+    "en": "English"
+  },
+  "footer": {
+    "tagline": "We build software, shape brands and grow audiences, with one team that sees your business as a whole.",
+    "servicesTitle": "Services",
+    "companyTitle": "Company",
+    "contactTitle": "Get in touch",
+    "followTitle": "Follow us",
+    "email": "Email",
+    "phone": "Phone",
+    "address": "Address",
+    "newsletter": {
+      "title": "Newsletter",
+      "description": "Insights on building and growing digital products, once a month.",
+      "placeholder": "Your email address",
+      "submit": "Subscribe",
+      "comingSoon": "Coming soon"
+    },
+    "copyright": "© {year} Codex. All rights reserved.",
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Service"
+  },
+  "socialPlatforms": {
+    "FACEBOOK": "Facebook",
+    "INSTAGRAM": "Instagram",
+    "X": "X",
+    "LINKEDIN": "LinkedIn",
+    "TIKTOK": "TikTok",
+    "SNAPCHAT": "Snapchat",
+    "YOUTUBE": "YouTube",
+    "BEHANCE": "Behance",
+    "DRIBBBLE": "Dribbble",
+    "GITHUB": "GitHub"
+  },
+  "whatsapp": {
+    "label": "Chat with us on WhatsApp",
+    "message": "Hi Codex, I'd like to talk about a project."
+  },
+  "budgetRanges": {
+    "UNDER_5K": "Under 5,000",
+    "FROM_5K_TO_15K": "5,000 to 15,000",
+    "FROM_15K_TO_50K": "15,000 to 50,000",
+    "ABOVE_50K": "Over 50,000",
+    "NOT_SURE": "Not sure yet"
+  },
+  "notFound": {
+    "title": "This page does not exist",
+    "description": "The link may be broken or the page may have moved. Let's get you back on track.",
+    "home": "Back to home"
+  },
+  "error": {
+    "title": "Something went wrong",
+    "description": "We could not load this page. Please try again in a moment.",
+    "retry": "Try again",
+    "home": "Back to home"
+  },
+  "common": {
+    "loading": "Loading…",
+    "learnMore": "Learn more",
+    "comingSoon": "Coming soon"
+  },
+  "showcase": {
+    "title": "UI showcase",
+    "description": "Every component on both surfaces, for review. This page is not available in production.",
+    "surfaceDark": "Dark surface",
+    "surfaceLight": "Light surface",
+    "buttons": "Buttons",
+    "primary": "Primary",
+    "secondary": "Secondary",
+    "outline": "Outline",
+    "ghost": "Ghost",
+    "link": "Link",
+    "loading": "Saving",
+    "small": "Small",
+    "large": "Large",
+    "badges": "Badges",
+    "new": "New",
+    "featured": "Featured",
+    "cards": "Cards",
+    "cardTitle": "E-commerce store",
+    "cardBody": "A fast Salla store with custom checkout and automated shipping.",
+    "forms": "Form controls",
+    "nameLabel": "Full name",
+    "namePlaceholder": "Your name",
+    "emailLabel": "Email",
+    "emailHint": "We reply within one business day.",
+    "messageLabel": "Message",
+    "budgetLabel": "Budget",
+    "budgetPlaceholder": "Choose a range",
+    "timelineLabel": "Timeline",
+    "timelineSoon": "As soon as possible",
+    "timelineLater": "In a few months",
+    "agree": "I agree to be contacted about my request",
+    "disclosure": "Accordion, tabs and dialogs",
+    "faqQuestion": "How long does a project take?",
+    "faqAnswer": "Most projects launch in four to twelve weeks, depending on scope.",
+    "faqQuestion2": "Do you work with startups?",
+    "faqAnswer2": "Yes. We help teams of every size, from first idea to scale.",
+    "tabOverview": "Overview",
+    "tabProcess": "Process",
+    "tabOverviewBody": "We start by understanding your goals and your customers.",
+    "tabProcessBody": "Discover, design, build, launch, then improve with data.",
+    "openDialog": "Open dialog",
+    "dialogTitle": "Start a project",
+    "dialogBody": "Tell us what you want to build and we'll get back to you.",
+    "openSheet": "Open sheet",
+    "showToast": "Show toast",
+    "toastMessage": "Your message was sent.",
+    "skeleton": "Skeleton",
+    "motion": "Motion",
+    "statProjects": "Projects delivered",
+    "decor": "Decorative elements",
+    "headingEyebrow": "What we do",
+    "headingTitle": "Three teams, one goal",
+    "headingDescription": "Development, branding and marketing working together on your growth."
+  },
+  "validation": {
+    "required": "This field is required",
+    "invalidType": "This value is not valid",
+    "invalidOption": "Choose one of the available options",
+    "tooShort": "This is too short",
+    "tooLong": "This is too long",
+    "email": {
+      "invalid": "Enter a valid email address"
+    },
+    "phone": {
+      "invalid": "Enter a valid phone number with the country code"
+    },
+    "url": {
+      "invalid": "Enter a valid link starting with http or https"
+    },
+    "path": {
+      "invalid": "Enter a valid page path, like /contact"
+    },
+    "slug": {
+      "invalid": "Use lowercase letters, numbers and dashes only",
+      "taken": "This URL is already used by another page"
+    },
+    "id": {
+      "invalid": "This item no longer exists"
+    },
+    "date": {
+      "invalid": "Enter a valid date",
+      "invalidRange": "The end date must be after the start date"
+    },
+    "number": {
+      "notInteger": "Enter a whole number",
+      "tooSmall": "This number is too small",
+      "tooBig": "This number is too big"
+    },
+    "array": {
+      "tooFew": "Add more items",
+      "tooMany": "Remove some items",
+      "duplicates": "Each item can be added only once"
+    },
+    "password": {
+      "tooShort": "The password is too short",
+      "weak": "This password is too easy to guess. Try a longer phrase",
+      "containsEmail": "The password must not contain your email",
+      "unchanged": "The new password must be different from the current one"
+    },
+    "richText": {
+      "invalid": "The content contains unsupported formatting",
+      "tooLarge": "The content is too long"
+    },
+    "link": {
+      "unsafe": "This link is not allowed"
+    },
+    "user": {
+      "lastAdmin": "The last active admin cannot be removed"
+    },
+    "category": {
+      "inUse": "Move its posts or projects first, then change the type"
+    },
+    "token": {
+      "invalid": "This link is invalid or has expired"
+    },
+    "file": {
+      "required": "Choose a file to upload",
+      "unsupportedType": "Upload a JPG, PNG, WebP or AVIF image",
+      "invalidImage": "This image could not be read"
+    }
+  },
+  "errors": {
+    "validationFailed": "Please check the highlighted fields",
+    "invalidJson": "The request could not be read",
+    "payloadTooLarge": "The upload is too large",
+    "unauthorized": "Please sign in to continue",
+    "invalidCredentials": "The email or password is incorrect",
+    "forbidden": "You do not have access to this",
+    "csrfInvalid": "Your session expired. Refresh the page and try again",
+    "notFound": "We could not find what you were looking for",
+    "conflict": "This conflicts with existing data",
+    "mediaInUse": "This file is still used on the site",
+    "refreshConflict": "Your session was refreshed in another tab. Please retry",
+    "rateLimited": "Too many attempts. Please wait a moment and try again",
+    "botCheckFailed": "We could not verify you are human. Please try again",
+    "internal": "Something went wrong on our side. Please try again",
+    "serviceUnavailable": "This service is temporarily unavailable"
+  },
+  "content": {
+    "home": "Home",
+    "breadcrumbs": "Breadcrumb",
+    "readingTime": "{minutes, plural, one {# min read} other {# min read}}",
+    "pagination": {
+      "label": "Pagination",
+      "previous": "Previous page",
+      "next": "Next page",
+      "page": "Page {page}"
+    }
+  },
+  "offerings": {
+    "ECOMMERCE": {
+      "title": "E-commerce stores",
+      "description": "Fast, secure stores with a checkout that turns visitors into customers."
+    },
+    "ELEARNING": {
+      "title": "E-learning platforms",
+      "description": "Courses, subscriptions, certificates and progress tracking in one platform."
+    },
+    "ERP": {
+      "title": "ERP systems",
+      "description": "One system that connects sales, inventory, accounting and HR."
+    },
+    "CRM": {
+      "title": "CRM systems",
+      "description": "Every lead, deal and conversation in one place, so nothing slips."
+    },
+    "SALLA": {
+      "title": "Salla stores",
+      "description": "Custom-designed Salla stores with shipping and payment integrations."
+    },
+    "SHOPIFY": {
+      "title": "Shopify stores",
+      "description": "Shopify stores ready to sell locally and worldwide, with tailored themes and apps."
+    },
+    "WORDPRESS": {
+      "title": "WordPress websites",
+      "description": "Fast company sites and blogs your team can update without a developer."
+    },
+    "AI_AGENTS": {
+      "title": "AI agents",
+      "description": "Assistants that answer customers and handle routine tasks around the clock."
+    },
+    "N8N_AUTOMATION": {
+      "title": "n8n automation",
+      "description": "Workflows that connect your tools and save hours of manual work every week."
+    },
+    "BRAND_STRATEGY": {
+      "title": "Brand strategy",
+      "description": "Clear positioning and a message that sets you apart from competitors."
+    },
+    "LOGO_DESIGN": {
+      "title": "Logo design",
+      "description": "A simple, strong mark people recognize at a glance."
+    },
+    "VISUAL_IDENTITY": {
+      "title": "Visual identity",
+      "description": "Colors, type and visuals that stay consistent at every touchpoint."
+    },
+    "BRAND_GUIDELINES": {
+      "title": "Brand guidelines",
+      "description": "A practical guide that keeps every team and partner on brand."
+    },
+    "SOCIAL_MEDIA": {
+      "title": "Social media",
+      "description": "Planning, publishing and community management that builds a following."
+    },
+    "CONTENT_CREATION": {
+      "title": "Content creation",
+      "description": "Copy, design and video that tell your story and persuade your audience."
+    },
+    "PAID_ADS": {
+      "title": "Paid ads",
+      "description": "Google and social campaigns with a return you can measure."
+    },
+    "SEO": {
+      "title": "SEO",
+      "description": "Higher rankings and search traffic that turns into customers."
+    }
+  },
+  "teams": {
+    "BRAND": {
+      "name": "Brand Team",
+      "description": "Strategists and designers who shape how your business looks, sounds and feels.",
+      "focus": "Strategy, logos, identities, guidelines"
+    },
+    "MARKETING": {
+      "name": "Marketing Team",
+      "description": "Marketers who plan campaigns, create content and grow your audience with data.",
+      "focus": "Social, content, ads, SEO"
+    },
+    "DEVELOPMENT": {
+      "name": "Development Team",
+      "description": "Engineers who build stores, platforms, business systems and AI automations.",
+      "focus": "Web, e-commerce, ERP and CRM, AI"
+    }
+  },
+  "home": {
+    "hero": {
+      "eyebrow": "Full-service digital agency",
+      "title": "We build brands and digital products that grow with you",
+      "subtitle": "Development, branding and marketing teams working together to turn your idea into measurable results.",
+      "primaryCta": "Request a Quote",
+      "secondaryCta": "View Our Work"
+    },
+    "clients": {
+      "title": "Trusted by ambitious brands"
+    },
+    "pillars": {
+      "eyebrow": "What we do",
+      "title": "Three disciplines, one team",
+      "description": "Your software, your brand and your marketing, planned together so every part pushes in the same direction.",
+      "explore": "Explore {service}"
+    },
+    "expertise": {
+      "eyebrow": "Development",
+      "title": "Software built around how you sell and operate",
+      "description": "From your first online store to the systems that run the whole company.",
+      "cta": "Discuss your project"
+    },
+    "automation": {
+      "eyebrow": "AI & automation",
+      "title": "Let AI agents and n8n take the busywork off your team",
+      "description": "We map the tasks that eat your week, then build agents and workflows that handle them reliably, with people still in charge of what matters.",
+      "points": {
+        "agents": "AI agents that answer customers and qualify leads in seconds",
+        "workflows": "n8n workflows that sync orders, invoices and stock across your tools",
+        "control": "Human review on sensitive decisions, and clear numbers on time saved"
+      },
+      "cta": "Automate a workflow",
+      "diagramLabel": "A workflow: a new order triggers an AI agent, which updates the CRM and notifies the customer",
+      "nodes": {
+        "trigger": "New order",
+        "agent": "AI agent",
+        "crm": "CRM",
+        "notify": "Notify"
+      }
+    },
+    "stats": {
+      "eyebrow": "By the numbers",
+      "title": "Results that speak for us"
+    },
+    "teams": {
+      "eyebrow": "Our teams",
+      "title": "Specialists who work as one",
+      "description": "Three dedicated teams share one plan, one timeline and one goal: your growth."
+    },
+    "featured": {
+      "eyebrow": "Selected work",
+      "title": "Projects we are proud of",
+      "description": "A few of the stores, platforms and brands we have launched with our clients.",
+      "viewAll": "View all projects"
+    },
+    "process": {
+      "eyebrow": "How we work",
+      "title": "From the first call to steady growth",
+      "description": "A clear process with checkpoints at every stage, so you always know what comes next.",
+      "steps": {
+        "discover": {
+          "title": "Discover",
+          "description": "We learn your goals, your audience and your market."
+        },
+        "design": {
+          "title": "Design",
+          "description": "We turn insight into a clear experience and identity."
+        },
+        "build": {
+          "title": "Build",
+          "description": "We build in short iterations with regular reviews."
+        },
+        "launch": {
+          "title": "Launch",
+          "description": "We launch carefully and watch every detail."
+        },
+        "grow": {
+          "title": "Grow",
+          "description": "We measure, learn and improve with you."
+        }
+      }
+    },
+    "testimonials": {
+      "eyebrow": "Client stories",
+      "title": "What our clients say",
+      "label": "Client testimonials",
+      "previous": "Previous testimonial",
+      "next": "Next testimonial",
+      "pause": "Pause automatic rotation",
+      "play": "Resume automatic rotation",
+      "slide": "{index} of {total}",
+      "rating": "Rated {rating} out of 5"
+    },
+    "latestPosts": {
+      "eyebrow": "From the blog",
+      "title": "Ideas for building and growing online",
+      "viewAll": "Read the blog"
+    },
+    "cta": {
+      "title": "Have a project in mind? Let's build it together",
+      "subtitle": "Tell us what you need and we will reply within one business day with next steps.",
+      "button": "Request a Quote",
+      "contact": "Contact us",
+      "shortcutsLabel": "Or reach us directly",
+      "email": "Email",
+      "phone": "Call",
+      "whatsapp": "WhatsApp"
+    }
+  },
+  "pageCta": {
+    "title": "Ready to start your project?",
+    "description": "Tell us where you want to go. We will reply within one business day with a clear plan and next steps.",
+    "primary": "Request a Quote",
+    "secondary": "Contact us"
+  },
+  "whyCodex": {
+    "eyebrow": "Why Codex",
+    "title": "A partner that owns the result with you",
+    "description": "Agencies are easy to find. A team that builds, brands and markets as one is not.",
+    "items": {
+      "oneTeam": {
+        "title": "One team, one plan",
+        "description": "Development, brand and marketing plan together, so nothing gets lost between vendors."
+      },
+      "results": {
+        "title": "Measured by results",
+        "description": "We agree on the numbers that matter at the start and report on them honestly."
+      },
+      "transparent": {
+        "title": "Transparent from day one",
+        "description": "Clear scope, fixed checkpoints and a shared board where you can see progress any time."
+      },
+      "partner": {
+        "title": "With you after launch",
+        "description": "Support, improvements and growth work long after the project goes live."
+      }
+    }
+  },
+  "services": {
+    "meta": {
+      "title": "Services",
+      "description": "Software development, branding and digital marketing from one team: stores, platforms, ERP and CRM, AI automation, identities and campaigns."
+    },
+    "hero": {
+      "eyebrow": "Our services",
+      "title": "Everything your business needs to grow online",
+      "description": "Three specialist teams, one plan. Pick a single service or bring us the whole journey."
+    },
+    "pillar": {
+      "includes": "What it includes",
+      "explore": "Explore {service}",
+      "quote": "Get a quote"
+    },
+    "detail": {
+      "overviewEyebrow": "Overview",
+      "subServicesEyebrow": "What we deliver",
+      "subServicesTitle": "Services under {service}",
+      "benefitsEyebrow": "Why it matters",
+      "benefitsTitle": "What you gain",
+      "relatedEyebrow": "Related work",
+      "relatedTitle": "Projects in {service}",
+      "faqEyebrow": "FAQ",
+      "faqTitle": "Questions we often hear",
+      "quote": "Request a quote for {service}",
+      "contact": "Talk to us"
+    }
+  },
+  "portfolio": {
+    "meta": {
+      "title": "Portfolio",
+      "description": "Case studies from Codex: online stores, learning platforms, business systems, AI automations, brand identities and marketing campaigns.",
+      "categoryTitle": "{category} projects",
+      "categoryDescription": "Codex case studies in {category}: the challenge, what we built and the results."
+    },
+    "hero": {
+      "eyebrow": "Our work",
+      "title": "Case studies with real results",
+      "description": "How we helped businesses launch, rebrand and grow, with the numbers behind each project."
+    },
+    "filters": {
+      "label": "Filter projects by category",
+      "all": "All projects"
+    },
+    "empty": {
+      "title": "No projects here yet",
+      "description": "We are preparing case studies for this category. Meanwhile, explore the rest of our work.",
+      "action": "View all projects"
+    },
+    "detail": {
+      "client": "Client",
+      "industry": "Industry",
+      "services": "Services",
+      "techStack": "Tech stack",
+      "published": "Launched",
+      "challenge": "The challenge",
+      "solution": "Our solution",
+      "resultsEyebrow": "Results",
+      "resultsTitle": "What changed",
+      "galleryEyebrow": "Gallery",
+      "galleryTitle": "A closer look",
+      "previous": "Previous project",
+      "next": "Next project",
+      "all": "All projects"
+    },
+    "gallery": {
+      "open": "Open image {index} of {total}: {alt}",
+      "close": "Close",
+      "previous": "Previous image",
+      "next": "Next image",
+      "counter": "Image {index} of {total}"
+    }
+  },
+  "blog": {
+    "meta": {
+      "title": "Blog",
+      "description": "Practical articles on e-commerce, platforms, branding, marketing and AI automation from the Codex team.",
+      "categoryTitle": "{category} articles",
+      "categoryDescription": "Articles from the Codex team about {category}.",
+      "tagTitle": "Articles tagged “{tag}”",
+      "searchTitle": "Search results for “{query}”",
+      "feedTitle": "Codex blog",
+      "feedDescription": "New articles from the Codex team."
+    },
+    "hero": {
+      "eyebrow": "Blog",
+      "title": "Ideas for building and growing online",
+      "description": "Lessons from the stores, platforms, brands and campaigns we build every day."
+    },
+    "search": {
+      "label": "Search articles",
+      "placeholder": "Search articles…",
+      "submit": "Search",
+      "results": "{count, plural, =0 {No articles match “{query}”} one {# article matches “{query}”} other {# articles match “{query}”}}",
+      "tooShort": "{min, plural, one {Type at least # character to search.} other {Type at least # characters to search.}}",
+      "clear": "Clear search"
+    },
+    "filters": {
+      "label": "Blog categories",
+      "all": "All articles"
+    },
+    "featured": "Featured",
+    "tagged": "Tagged “{tag}”",
+    "rss": "RSS feed",
+    "empty": {
+      "title": "No articles yet",
+      "description": "We are writing the first articles for this section. Check back soon.",
+      "action": "Back to the blog"
+    },
+    "post": {
+      "by": "By {author}",
+      "tableOfContents": "On this page",
+      "share": "Share this article",
+      "shareOn": "Share on {network}",
+      "email": "Email",
+      "tags": "Tags",
+      "relatedEyebrow": "Keep reading",
+      "relatedTitle": "Related articles"
+    }
+  },
+  "about": {
+    "meta": {
+      "title": "About us",
+      "description": "Meet Codex: one agency with dedicated development, brand and marketing teams that build digital products and grow businesses."
+    },
+    "hero": {
+      "eyebrow": "About Codex",
+      "title": "We build what helps businesses grow",
+      "description": "A digital agency of engineers, designers and marketers who work as one team, from the first idea to steady growth."
+    },
+    "story": {
+      "eyebrow": "Our story",
+      "title": "Started by builders, grown with our clients",
+      "paragraphs": {
+        "first": "Codex began with a simple observation: businesses were hiring one company for their website, another for their brand and a third for their marketing, and paying for the gaps between them.",
+        "second": "So we brought those skills under one roof. Today our development, brand and marketing teams plan every project together, share one timeline and measure success by the same numbers.",
+        "third": "We have helped stores, schools, startups and established companies launch, rebrand and grow, and many of them still work with us years later."
+      }
+    },
+    "missionVision": {
+      "eyebrow": "What drives us",
+      "missionTitle": "Our mission",
+      "mission": "To give every business the technology, brand and marketing it needs to compete, delivered by one team that cares about the result.",
+      "visionTitle": "Our vision",
+      "vision": "To be the partner growing brands in the region trust first to build and scale their digital presence."
+    },
+    "values": {
+      "eyebrow": "Our values",
+      "title": "How we work, every day",
+      "items": {
+        "clarity": {
+          "title": "Clarity",
+          "description": "Plain language, clear scope and honest timelines. No surprises."
+        },
+        "craft": {
+          "title": "Craft",
+          "description": "We sweat the details: fast code, careful design and copy that reads well."
+        },
+        "ownership": {
+          "title": "Ownership",
+          "description": "We treat your goals as ours and stay accountable for the outcome."
+        },
+        "learning": {
+          "title": "Learning",
+          "description": "We measure, learn and improve with every release and every campaign."
+        }
+      }
+    },
+    "team": {
+      "eyebrow": "The people",
+      "title": "Meet the team",
+      "description": "Specialists who know their craft and enjoy working together.",
+      "empty": "Team profiles are coming soon.",
+      "socialLink": "{name} on {platform}"
+    }
+  },
+  "forms": {
+    "optional": "Optional",
+    "verifying": "Checking that you are human…",
+    "turnstileFailed": "The security check could not load. Turn off content blockers for this page or try again later.",
+    "failed": "We could not send your request. Check your connection and try again.",
+    "retry": "Try again",
+    "rateLimited": "{minutes, plural, one {You have sent several requests in a short time. Please try again in a minute.} other {You have sent several requests in a short time. Please try again in # minutes.}}",
+    "fixErrors": "{count, plural, one {Please correct the highlighted field.} other {Please correct the # highlighted fields.}}"
+  },
+  "contact": {
+    "meta": {
+      "title": "Contact us",
+      "description": "Talk to Codex about your website, store, platform, brand or marketing. We reply within one business day."
+    },
+    "hero": {
+      "eyebrow": "Contact",
+      "title": "Let's talk about your project",
+      "description": "Send us a message, call or reach us on WhatsApp. A specialist replies within one business day."
+    },
+    "form": {
+      "title": "Send us a message",
+      "description": "Tell us a little about what you need. All fields are required unless marked optional.",
+      "name": "Full name",
+      "email": "Email",
+      "phone": "Phone",
+      "phoneHint": "With the country code, e.g. +966 5x xxx xxxx",
+      "message": "How can we help?",
+      "messageHint": "A few sentences are enough: your goal, timeline and anything we should know.",
+      "submit": "Send message",
+      "sending": "Sending…",
+      "successTitle": "Thank you, your message is on its way",
+      "successBody": "We have received it and will reply to {email} within one business day.",
+      "another": "Send another message"
+    },
+    "info": {
+      "title": "Other ways to reach us",
+      "email": "Email",
+      "phone": "Phone",
+      "whatsapp": "WhatsApp",
+      "whatsappAction": "Start a chat",
+      "address": "Office",
+      "socials": "Follow us"
+    },
+    "map": {
+      "title": "Find us",
+      "notice": "The map is provided by Google and loads only when you ask for it.",
+      "load": "Show the map",
+      "open": "Open in Google Maps",
+      "frameTitle": "Map of the Codex office"
+    }
+  },
+  "projectTimelines": {
+    "ASAP": "As soon as possible",
+    "ONE_TO_THREE_MONTHS": "In 1 to 3 months",
+    "THREE_TO_SIX_MONTHS": "In 3 to 6 months",
+    "FLEXIBLE": "I'm flexible"
+  },
+  "quote": {
+    "meta": {
+      "title": "Request a quote",
+      "description": "Tell Codex about your project in three short steps and get a clear proposal with scope, timeline and price."
+    },
+    "hero": {
+      "eyebrow": "Request a quote",
+      "title": "Let's plan your project",
+      "description": "Three short steps, about two minutes. We reply within one business day."
+    },
+    "progress": {
+      "label": "Quote request progress",
+      "step": "Step {current} of {total}",
+      "services": "Services",
+      "details": "Project",
+      "contact": "Contact"
+    },
+    "services": {
+      "title": "Which services do you need?",
+      "description": "Pick everything that applies; we will help you refine it.",
+      "selected": "{count, plural, =0 {No services selected yet} one {# service selected} other {# services selected}}"
+    },
+    "details": {
+      "title": "Tell us about your project",
+      "description": "Your goals, your audience and anything that already exists.",
+      "projectDetails": "Project description",
+      "projectDetailsHint": "What do you want to build or improve, and what would success look like?",
+      "budget": "Estimated budget",
+      "timeline": "When would you like to start?"
+    },
+    "contact": {
+      "title": "How can we reach you?",
+      "description": "We only use these details to answer your request.",
+      "name": "Full name",
+      "email": "Email",
+      "phone": "Phone",
+      "company": "Company"
+    },
+    "actions": {
+      "next": "Continue",
+      "back": "Back",
+      "submit": "Send request",
+      "sending": "Sending…"
+    },
+    "next": {
+      "title": "What happens next",
+      "review": "We review your request and note any questions.",
+      "call": "A specialist books a short call with you to understand the details.",
+      "proposal": "You receive a clear proposal: scope, timeline and price."
+    },
+    "success": {
+      "title": "Your request is in",
+      "body": "Thank you, {name}. We will reply to {email} within one business day.",
+      "again": "Start a new request"
+    }
+  }
+}

@@ -1,0 +1,12 @@
+pnpm-lock.yaml
+node_modules
+dist
+.next
+.turbo
+coverage
+.react-email
+
+# project specs are authored by hand; keep them byte-for-byte
+CLAUDE.md
+docs/phases
+apps/api/src/generated

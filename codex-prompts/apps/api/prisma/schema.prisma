@@ -1,0 +1,584 @@
+// Codex database schema. Connection URLs live in prisma.config.ts (Prisma 7).
+//
+// Conventions:
+// - Json columns are JSONB. Localized fields hold `{ ar, en }`; rich text holds Tiptap docs per
+//   locale. Prisma cannot enforce their shape, so every write is validated with the zod schemas
+//   in @codex/shared first.
+// - VARCHAR sizes mirror FIELD_LIMITS in @codex/shared.
+// - Enums mirror @codex/shared/enums; apps/api/src/lib/prisma-enums.test.ts enforces parity.
+// - Extra CHECK constraints live in the initial migration's SQL (Prisma does not model them).
+
+generator client {
+  provider            = "prisma-client"
+  output              = "../src/generated/prisma"
+  moduleFormat        = "esm"
+  importFileExtension = "js"
+  runtime             = "nodejs"
+  previewFeatures     = ["postgresqlExtensions"]
+}
+
+datasource db {
+  provider   = "postgresql"
+  /// Trigram search on posts (Neon supports it); created by the owner in a migration.
+  extensions = [pg_trgm]
+}
+
+// ─── Enums ────────────────────────────────────────────────────────────────────
+
+enum Role {
+  ADMIN
+  EDITOR
+}
+
+enum ContentStatus {
+  DRAFT
+  PUBLISHED
+}
+
+enum ServiceCategory {
+  DEVELOPMENT
+  BRANDING
+  MARKETING
+}
+
+enum CategoryType {
+  POST
+  PROJECT
+}
+
+enum Team {
+  BRAND
+  MARKETING
+  DEVELOPMENT
+}
+
+enum LeadStatus {
+  NEW
+  CONTACTED
+  IN_PROGRESS
+  WON
+  LOST
+}
+
+enum ContactStatus {
+  NEW
+  REPLIED
+  ARCHIVED
+}
+
+enum Locale {
+  ar
+  en
+}
+
+enum ServiceOffering {
+  ECOMMERCE
+  ELEARNING
+  ERP
+  CRM
+  SALLA
+  SHOPIFY
+  WORDPRESS
+  AI_AGENTS
+  N8N_AUTOMATION
+  BRAND_STRATEGY
+  LOGO_DESIGN
+  VISUAL_IDENTITY
+  BRAND_GUIDELINES
+  SOCIAL_MEDIA
+  CONTENT_CREATION
+  PAID_ADS
+  SEO
+}
+
+enum BudgetRange {
+  UNDER_5K
+  FROM_5K_TO_15K
+  FROM_15K_TO_50K
+  ABOVE_50K
+  NOT_SURE
+}
+
+enum ProjectTimeline {
+  ASAP
+  ONE_TO_THREE_MONTHS
+  THREE_TO_SIX_MONTHS
+  FLEXIBLE
+}
+
+enum AuditAction {
+  CREATE
+  UPDATE
+  DELETE
+  STATUS_CHANGE
+  LOGIN
+  LOGIN_FAILED
+  LOGOUT
+  TOKEN_REUSE_DETECTED
+  ACCOUNT_LOCKED
+  EXPORT
+  REORDER
+  PASSWORD_RESET_REQUESTED
+  PASSWORD_RESET
+}
+
+enum AuditEntity {
+  USER
+  SERVICE
+  PROJECT
+  POST
+  CATEGORY
+  TAG
+  TESTIMONIAL
+  TEAM_MEMBER
+  CLIENT
+  MEDIA
+  QUOTE_REQUEST
+  CONTACT_MESSAGE
+  SITE_SETTINGS
+}
+
+// ─── Users and auth ───────────────────────────────────────────────────────────
+
+model User {
+  id                  String    @id @default(uuid(7)) @db.Uuid
+  name                String    @db.VarChar(80)
+  /// Always lowercase (zod normalizes; a CHECK constraint enforces it).
+  email               String    @unique @db.VarChar(254)
+  /// argon2id PHC string.
+  passwordHash        String    @db.VarChar(255)
+  role                Role      @default(EDITOR)
+  isActive            Boolean   @default(true)
+  failedLoginAttempts Int       @default(0)
+  lockedUntil         DateTime? @db.Timestamptz(3)
+  lastLoginAt         DateTime? @db.Timestamptz(3)
+  /// Access tokens issued before this instant are rejected (sessions end on password change).
+  passwordChangedAt   DateTime? @db.Timestamptz(3)
+  createdAt           DateTime  @default(now()) @db.Timestamptz(3)
+  updatedAt           DateTime  @updatedAt @db.Timestamptz(3)
+
+  refreshTokens  RefreshToken[]
+  passwordResets PasswordResetToken[]
+  uploadedMedia  Media[]
+  posts          Post[]
+  assignedQuotes QuoteRequest[]
+  auditLogs      AuditLog[]
+
+  @@map("users")
+}
+
+model RefreshToken {
+  id               String    @id @default(uuid(7)) @db.Uuid
+  userId           String    @db.Uuid
+  /// SHA-256 hex of the opaque token; the token itself is never stored.
+  tokenHash        String    @unique @db.Char(64)
+  familyId         String    @db.Uuid
+  /// When the session (family) began: copied on every rotation, so deleting a family's old
+  /// tokens never moves the 30-day absolute cap.
+  sessionStartedAt DateTime  @db.Timestamptz(3)
+  expiresAt        DateTime  @db.Timestamptz(3)
+  revokedAt        DateTime? @db.Timestamptz(3)
+  replacedById     String?   @unique @db.Uuid
+  userAgent        String?   @db.VarChar(512)
+  ipHash           String?   @db.Char(64)
+  createdAt        DateTime  @default(now()) @db.Timestamptz(3)
+  updatedAt        DateTime  @updatedAt @db.Timestamptz(3)
+
+  user       User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  replacedBy RefreshToken? @relation("TokenRotation", fields: [replacedById], references: [id], onDelete: SetNull)
+  replaces   RefreshToken? @relation("TokenRotation")
+
+  @@index([userId])
+  @@index([familyId])
+  @@index([expiresAt])
+  @@map("refresh_tokens")
+}
+
+/// Single-use emailed password reset link; only the token's SHA-256 is stored.
+model PasswordResetToken {
+  id        String    @id @default(uuid(7)) @db.Uuid
+  userId    String    @db.Uuid
+  tokenHash String    @unique @db.Char(64)
+  expiresAt DateTime  @db.Timestamptz(3)
+  usedAt    DateTime? @db.Timestamptz(3)
+  createdAt DateTime  @default(now()) @db.Timestamptz(3)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("password_reset_tokens")
+}
+
+// ─── Media ────────────────────────────────────────────────────────────────────
+
+model Media {
+  id           String   @id @default(uuid(7)) @db.Uuid
+  url          String   @db.VarChar(2048)
+  /// Cloudinary public id.
+  publicId     String   @unique @db.VarChar(255)
+  /// LocalizedString
+  alt          Json
+  width        Int
+  height       Int
+  mimeType     String   @db.VarChar(100)
+  sizeBytes    Int
+  uploadedById String?  @db.Uuid
+  createdAt    DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt    DateTime @updatedAt @db.Timestamptz(3)
+
+  // Media in use cannot be deleted (Restrict on every reference below).
+  uploadedBy      User?                 @relation(fields: [uploadedById], references: [id], onDelete: SetNull)
+  serviceCovers   Service[]             @relation("ServiceCover")
+  projectCovers   Project[]             @relation("ProjectCover")
+  projectGallery  ProjectGalleryImage[]
+  postCovers      Post[]                @relation("PostCover")
+  serviceOgImages Service[]             @relation("ServiceOgImage")
+  projectOgImages Project[]             @relation("ProjectOgImage")
+  postOgImages    Post[]                @relation("PostOgImage")
+  testimonials    Testimonial[]
+  teamMembers     TeamMember[]
+  clientLogos     Client[]
+  siteLogos       SiteSettings[]        @relation("SiteLogo")
+  siteOgImages    SiteSettings[]        @relation("SiteOgImage")
+
+  @@index([uploadedById])
+  @@index([createdAt(sort: Desc)])
+  @@map("media")
+}
+
+// ─── Content ──────────────────────────────────────────────────────────────────
+
+model Service {
+  id               String          @id @default(uuid(7)) @db.Uuid
+  slugAr           String          @unique @db.VarChar(120)
+  slugEn           String          @unique @db.VarChar(120)
+  /// LocalizedString
+  title            Json
+  /// LocalizedString
+  shortDescription Json
+  /// { ar: TiptapDoc, en: TiptapDoc }
+  content          Json
+  /// lucide icon name from SERVICE_ICONS.
+  icon             String          @db.VarChar(64)
+  category         ServiceCategory
+  /// [{ title, description }] localized
+  subServices      Json
+  /// [{ title, description }] localized
+  benefits         Json
+  /// [{ question, answer }] localized
+  faqs             Json
+  coverId          String?         @db.Uuid
+  ogImageId        String?         @db.Uuid
+  order            Int             @default(0)
+  status           ContentStatus   @default(DRAFT)
+  /// { metaTitle?, metaDescription? } localized
+  seo              Json?
+  createdAt        DateTime        @default(now()) @db.Timestamptz(3)
+  updatedAt        DateTime        @updatedAt @db.Timestamptz(3)
+
+  cover   Media? @relation("ServiceCover", fields: [coverId], references: [id], onDelete: Restrict)
+  ogImage Media? @relation("ServiceOgImage", fields: [ogImageId], references: [id], onDelete: Restrict)
+
+  @@index([status, order])
+  @@index([category])
+  @@index([coverId])
+  @@index([ogImageId])
+  @@map("services")
+}
+
+model Project {
+  id              String          @id @default(uuid(7)) @db.Uuid
+  slugAr          String          @unique @db.VarChar(120)
+  slugEn          String          @unique @db.VarChar(120)
+  /// LocalizedString
+  title           Json
+  client          String?         @db.VarChar(120)
+  /// LocalizedString
+  industry        Json
+  /// Pillar used for "related projects" on service pages.
+  serviceCategory ServiceCategory
+  coverId         String?         @db.Uuid
+  ogImageId       String?         @db.Uuid
+  /// { ar: TiptapDoc, en: TiptapDoc }
+  challenge       Json
+  /// { ar: TiptapDoc, en: TiptapDoc }
+  solution        Json
+  /// [{ metric, value }] localized
+  results         Json
+  techStack       String[]
+  isFeatured      Boolean         @default(false)
+  status          ContentStatus   @default(DRAFT)
+  publishedAt     DateTime?       @db.Timestamptz(3)
+  order           Int             @default(0)
+  /// { metaTitle?, metaDescription? } localized
+  seo             Json?
+  createdAt       DateTime        @default(now()) @db.Timestamptz(3)
+  updatedAt       DateTime        @updatedAt @db.Timestamptz(3)
+
+  cover      Media?                @relation("ProjectCover", fields: [coverId], references: [id], onDelete: Restrict)
+  ogImage    Media?                @relation("ProjectOgImage", fields: [ogImageId], references: [id], onDelete: Restrict)
+  gallery    ProjectGalleryImage[]
+  categories Category[]            @relation("ProjectCategories")
+
+  @@index([status, publishedAt(sort: Desc)])
+  @@index([isFeatured, status])
+  @@index([order])
+  @@index([serviceCategory])
+  @@index([coverId])
+  @@index([ogImageId])
+  @@map("projects")
+}
+
+/// Explicit join so the gallery keeps its order and media in use cannot be deleted.
+model ProjectGalleryImage {
+  projectId String   @db.Uuid
+  mediaId   String   @db.Uuid
+  order     Int      @default(0)
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  media   Media   @relation(fields: [mediaId], references: [id], onDelete: Restrict)
+
+  @@id([projectId, mediaId])
+  @@index([mediaId])
+  @@map("project_gallery_images")
+}
+
+model Post {
+  id            String        @id @default(uuid(7)) @db.Uuid
+  slugAr        String        @unique @db.VarChar(120)
+  slugEn        String        @unique @db.VarChar(120)
+  /// LocalizedString
+  title         Json
+  /// LocalizedString
+  excerpt       Json
+  /// { ar: TiptapDoc, en: TiptapDoc }
+  content       Json
+  coverId       String?       @db.Uuid
+  ogImageId     String?       @db.Uuid
+  authorId      String        @db.Uuid
+  /// Minutes, computed on save.
+  readingTimeAr Int
+  /// Minutes, computed on save.
+  readingTimeEn Int
+  isFeatured    Boolean       @default(false)
+  status        ContentStatus @default(DRAFT)
+  publishedAt   DateTime?     @db.Timestamptz(3)
+  /// { metaTitle?, metaDescription? } localized
+  seo           Json?
+  /// Normalized title + excerpt in both locales, kept by a trigger (see the migration SQL);
+  /// trigram-indexed for the public `q` search. Never written by the app.
+  searchText    String        @default("")
+  createdAt     DateTime      @default(now()) @db.Timestamptz(3)
+  updatedAt     DateTime      @updatedAt @db.Timestamptz(3)
+
+  // Authors are deactivated, never deleted, while they own posts.
+  author     User       @relation(fields: [authorId], references: [id], onDelete: Restrict)
+  cover      Media?     @relation("PostCover", fields: [coverId], references: [id], onDelete: Restrict)
+  ogImage    Media?     @relation("PostOgImage", fields: [ogImageId], references: [id], onDelete: Restrict)
+  categories Category[] @relation("PostCategories")
+  tags       Tag[]      @relation("PostTags")
+
+  @@index([status, publishedAt(sort: Desc)])
+  @@index([isFeatured, status])
+  @@index([authorId])
+  @@index([coverId])
+  @@index([ogImageId])
+  @@index([searchText(ops: raw("gin_trgm_ops"))], type: Gin)
+  @@map("posts")
+}
+
+model Category {
+  id        String       @id @default(uuid(7)) @db.Uuid
+  /// LocalizedString
+  name      Json
+  slugAr    String       @unique @db.VarChar(120)
+  slugEn    String       @unique @db.VarChar(120)
+  type      CategoryType
+  createdAt DateTime     @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime     @updatedAt @db.Timestamptz(3)
+
+  projects Project[] @relation("ProjectCategories")
+  posts    Post[]    @relation("PostCategories")
+
+  @@index([type])
+  @@map("categories")
+}
+
+model Tag {
+  id        String   @id @default(uuid(7)) @db.Uuid
+  /// LocalizedString
+  name      Json
+  slugAr    String   @unique @db.VarChar(120)
+  slugEn    String   @unique @db.VarChar(120)
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime @updatedAt @db.Timestamptz(3)
+
+  posts Post[] @relation("PostTags")
+
+  @@map("tags")
+}
+
+// ─── Showcase ─────────────────────────────────────────────────────────────────
+
+model Testimonial {
+  id         String   @id @default(uuid(7)) @db.Uuid
+  clientName String   @db.VarChar(80)
+  /// LocalizedString
+  role       Json
+  company    String?  @db.VarChar(120)
+  photoId    String?  @db.Uuid
+  /// LocalizedString
+  quote      Json
+  /// 1–5 (CHECK constraint).
+  rating     Int      @db.SmallInt
+  order      Int      @default(0)
+  isVisible  Boolean  @default(true)
+  createdAt  DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt  DateTime @updatedAt @db.Timestamptz(3)
+
+  photo Media? @relation(fields: [photoId], references: [id], onDelete: Restrict)
+
+  @@index([isVisible, order])
+  @@index([photoId])
+  @@map("testimonials")
+}
+
+model TeamMember {
+  id        String   @id @default(uuid(7)) @db.Uuid
+  /// LocalizedString
+  name      Json
+  /// LocalizedString
+  role      Json
+  team      Team
+  photoId   String?  @db.Uuid
+  /// LocalizedString
+  bio       Json
+  /// [{ platform, url }]
+  socials   Json
+  order     Int      @default(0)
+  isVisible Boolean  @default(true)
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime @updatedAt @db.Timestamptz(3)
+
+  photo Media? @relation(fields: [photoId], references: [id], onDelete: Restrict)
+
+  @@index([team, isVisible, order])
+  @@index([photoId])
+  @@map("team_members")
+}
+
+model Client {
+  id        String   @id @default(uuid(7)) @db.Uuid
+  name      String   @db.VarChar(120)
+  logoId    String?  @db.Uuid
+  website   String?  @db.VarChar(2048)
+  order     Int      @default(0)
+  isVisible Boolean  @default(true)
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime @updatedAt @db.Timestamptz(3)
+
+  logo Media? @relation(fields: [logoId], references: [id], onDelete: Restrict)
+
+  @@index([isVisible, order])
+  @@index([logoId])
+  @@map("clients")
+}
+
+// ─── Leads ────────────────────────────────────────────────────────────────────
+
+model QuoteRequest {
+  id             String            @id @default(uuid(7)) @db.Uuid
+  services       ServiceOffering[]
+  projectDetails String            @db.VarChar(3000)
+  budgetRange    BudgetRange
+  timeline       ProjectTimeline
+  name           String            @db.VarChar(80)
+  email          String            @db.VarChar(254)
+  /// E.164
+  phone          String?           @db.VarChar(16)
+  company        String?           @db.VarChar(120)
+  locale         Locale
+  status         LeadStatus        @default(NEW)
+  internalNotes  String?           @db.VarChar(5000)
+  assignedToId   String?           @db.Uuid
+  /// HMAC-SHA256 hex of the client IP; raw IPs are never stored.
+  ipHash         String?           @db.Char(64)
+  userAgent      String?           @db.VarChar(512)
+  createdAt      DateTime          @default(now()) @db.Timestamptz(3)
+  updatedAt      DateTime          @updatedAt @db.Timestamptz(3)
+
+  assignedTo User? @relation(fields: [assignedToId], references: [id], onDelete: SetNull)
+
+  @@index([status, createdAt(sort: Desc)])
+  @@index([createdAt])
+  @@index([assignedToId])
+  @@map("quote_requests")
+}
+
+model ContactMessage {
+  id        String        @id @default(uuid(7)) @db.Uuid
+  name      String        @db.VarChar(80)
+  email     String        @db.VarChar(254)
+  /// E.164
+  phone     String?       @db.VarChar(16)
+  message   String        @db.VarChar(2000)
+  locale    Locale
+  status    ContactStatus @default(NEW)
+  /// HMAC-SHA256 hex of the client IP; raw IPs are never stored.
+  ipHash    String?       @db.Char(64)
+  createdAt DateTime      @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime      @updatedAt @db.Timestamptz(3)
+
+  @@index([status, createdAt(sort: Desc)])
+  @@map("contact_messages")
+}
+
+// ─── Settings and audit ───────────────────────────────────────────────────────
+
+/// Singleton row (id = 1, enforced by a CHECK constraint).
+model SiteSettings {
+  id          Int      @id @default(1)
+  /// LocalizedString
+  companyName Json
+  logoId      String?  @db.Uuid
+  /// { phone, email, whatsapp?, address }
+  contact     Json
+  /// [{ platform, url }]
+  socials     Json
+  /// { metaTitle, metaDescription } localized
+  defaultSeo  Json
+  /// Default social share image.
+  ogImageId   String?  @db.Uuid
+  /// { hero, stats, processSteps, featuredProjectIds, cta }
+  homepage    Json
+  createdAt   DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt   DateTime @updatedAt @db.Timestamptz(3)
+
+  logo    Media? @relation("SiteLogo", fields: [logoId], references: [id], onDelete: Restrict)
+  ogImage Media? @relation("SiteOgImage", fields: [ogImageId], references: [id], onDelete: Restrict)
+
+  @@index([ogImageId])
+  @@map("site_settings")
+}
+
+/// Append-only (no updatedAt); entries outlive the users who created them.
+model AuditLog {
+  id        String      @id @default(uuid(7)) @db.Uuid
+  actorId   String?     @db.Uuid
+  action    AuditAction
+  entity    AuditEntity
+  /// UUID, or "1" for SiteSettings.
+  entityId  String?     @db.VarChar(64)
+  /// Diff of changed fields; secrets are stripped before writing.
+  changes   Json?
+  ipHash    String?     @db.Char(64)
+  createdAt DateTime    @default(now()) @db.Timestamptz(3)
+
+  actor User? @relation(fields: [actorId], references: [id], onDelete: SetNull)
+
+  @@index([entity, entityId])
+  @@index([createdAt(sort: Desc)])
+  @@index([actorId])
+  @@map("audit_logs")
+}

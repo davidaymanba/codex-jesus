@@ -1,0 +1,81 @@
+import type { EmailMessages } from './types.js';
+
+export const en: EmailMessages = {
+  brand: {
+    name: 'Codex',
+    tagline: 'We build digital products, brands and growth',
+    footer: 'You received this email because you contacted Codex.',
+  },
+  labels: {
+    name: 'Name',
+    email: 'Email',
+    phone: 'Phone',
+    company: 'Company',
+    services: 'Services',
+    budget: 'Budget',
+    timeline: 'Timeline',
+    details: 'Project details',
+    message: 'Message',
+  },
+  newLead: {
+    quoteSubject: (name) => `New quote request from ${name}`,
+    contactSubject: (name) => `New contact message from ${name}`,
+    quoteHeading: 'New quote request',
+    contactHeading: 'New contact message',
+    intro: 'It just came in through the website. Here are the details:',
+    openInAdmin: 'Open it in the dashboard',
+  },
+  quoteConfirmation: {
+    subject: 'We received your request, thank you for choosing Codex',
+    heading: (name) => `Hi ${name},`,
+    body: 'Your quote request is in, and our team will review it carefully.',
+    servicesIntro: 'The services you selected:',
+    nextSteps:
+      'We will get back to you within two business days to understand your needs and suggest the next step.',
+  },
+  contactConfirmation: {
+    subject: 'We received your message',
+    heading: (name) => `Hi ${name},`,
+    body: 'Thanks for reaching out to Codex. We got your message and will reply soon.',
+  },
+  passwordReset: {
+    subject: 'Reset your password',
+    heading: (name) => `Hi ${name},`,
+    body: (minutes) =>
+      `Someone asked to reset the password of your Codex dashboard account. The link works once, for ${minutes} minutes.`,
+    button: 'Choose a new password',
+    ignore: 'If this was not you, ignore this email: your current password stays the same.',
+  },
+  services: {
+    ECOMMERCE: 'E-commerce',
+    ELEARNING: 'E-learning platforms',
+    ERP: 'ERP systems',
+    CRM: 'CRM systems',
+    SALLA: 'Salla stores',
+    SHOPIFY: 'Shopify stores',
+    WORDPRESS: 'WordPress',
+    AI_AGENTS: 'AI agents',
+    N8N_AUTOMATION: 'n8n automation',
+    BRAND_STRATEGY: 'Brand strategy',
+    LOGO_DESIGN: 'Logo design',
+    VISUAL_IDENTITY: 'Visual identity',
+    BRAND_GUIDELINES: 'Brand guidelines',
+    SOCIAL_MEDIA: 'Social media',
+    CONTENT_CREATION: 'Content creation',
+    PAID_ADS: 'Paid ads',
+    SEO: 'SEO',
+  },
+  budgets: {
+    UNDER_5K: 'Under 5K',
+    FROM_5K_TO_15K: '5K to 15K',
+    FROM_15K_TO_50K: '15K to 50K',
+    ABOVE_50K: 'Above 50K',
+    NOT_SURE: 'Not sure yet',
+  },
+  timelines: {
+    ASAP: 'As soon as possible',
+    ONE_TO_THREE_MONTHS: '1 to 3 months',
+    THREE_TO_SIX_MONTHS: '3 to 6 months',
+    FLEXIBLE: 'Flexible',
+  },
+};

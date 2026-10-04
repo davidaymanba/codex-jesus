@@ -1,0 +1,213 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  checks:
+    name: Lint, typecheck, test, build
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      # Placeholder values so env validation passes; no secrets are needed for these checks.
+      API_URL: http://localhost:4000
+      NEXT_PUBLIC_API_URL: http://localhost:4000
+      NEXT_PUBLIC_SITE_URL: http://localhost:3000
+      # Cloudflare's always-passing test key (public value, not a secret).
+      NEXT_PUBLIC_TURNSTILE_SITE_KEY: 1x00000000000000000000AA
+      FRONTEND_URL: http://localhost:3000
+      TURBO_TELEMETRY_DISABLED: '1'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      # CLAUDE.md §8: no high or critical advisories.
+      - name: Audit dependencies
+        run: pnpm audit --audit-level=high
+
+      - name: Check formatting
+        run: pnpm format:check
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Typecheck
+        run: pnpm typecheck
+
+      - name: Test
+        run: pnpm test
+
+      - name: Build
+        run: pnpm build
+
+  e2e:
+    name: Playwright smoke tests (web production build)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      # The API is not started: the layout renders its fallbacks, which the tests cover.
+      API_URL: http://localhost:4000
+      NEXT_PUBLIC_API_URL: http://localhost:4000
+      NEXT_PUBLIC_SITE_URL: http://localhost:3000
+      NEXT_PUBLIC_TURNSTILE_SITE_KEY: 1x00000000000000000000AA
+      ENABLE_UI_SHOWCASE: 'true'
+      TURBO_TELEMETRY_DISABLED: '1'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Install Chromium
+        run: pnpm --filter @codex/web exec playwright install --with-deps chromium
+
+      # Builds the web app (and the packages it needs), then runs the suite against it.
+      - name: End-to-end tests
+        run: pnpm test:e2e
+
+  database:
+    name: Migrate from scratch, seed twice, integration tests, coverage
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    services:
+      postgres:
+        image: postgres:18-alpine
+        # Throwaway CI database; these credentials exist only inside this job.
+        env:
+          POSTGRES_USER: codex_ci
+          POSTGRES_PASSWORD: codex_ci_owner
+          POSTGRES_DB: codex
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -h 127.0.0.1 -U codex_ci -d codex"
+          --health-interval 5s --health-timeout 5s --health-retries 10
+      redis:
+        image: redis:8-alpine
+        ports: ['6379:6379']
+        options: >-
+          --health-cmd "redis-cli ping | grep -q PONG"
+          --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      NODE_ENV: test
+      FRONTEND_URL: http://localhost:3000
+      DATABASE_URL: postgresql://codex_app:codex_ci_app@localhost:5432/codex
+      DIRECT_URL: postgresql://codex_ci:codex_ci_owner@localhost:5432/codex
+      # Integration tests run against a separate database (created by their global setup)
+      # and Redis database 1.
+      TEST_DATABASE_URL: postgresql://codex_app:codex_ci_app@localhost:5432/codex_test
+      TEST_DIRECT_URL: postgresql://codex_ci:codex_ci_owner@localhost:5432/codex_test
+      TEST_REDIS_URL: redis://localhost:6379/1
+      ADMIN_EMAIL: ci-owner@example.com
+      ADMIN_PASSWORD: Tide-Lantern-47-ci
+      TURBO_TELEMETRY_DISABLED: '1'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      # Throwaway per-run secrets; masked so they never appear in the log.
+      - name: Generate API secrets
+        run: |
+          jwt_key="$(openssl genpkey -algorithm ed25519 | base64 -w0)"
+          csrf_secret="$(openssl rand -base64 32)"
+          ip_hash_secret="$(openssl rand -base64 32)"
+          echo "::add-mask::$jwt_key"
+          echo "::add-mask::$csrf_secret"
+          echo "::add-mask::$ip_hash_secret"
+          {
+            echo "JWT_PRIVATE_KEY=$jwt_key"
+            echo "CSRF_SECRET=$csrf_secret"
+            echo "IP_HASH_SECRET=$ip_hash_secret"
+          } >> "$GITHUB_ENV"
+
+      - name: Check the Postgres client
+        run: psql --version
+
+      # Same least-privilege role as local docker; the app connects as it.
+      - name: Create the app role
+        env:
+          PGHOST: localhost
+          PGPASSWORD: codex_ci_owner
+          POSTGRES_USER: codex_ci
+          POSTGRES_DB: codex
+          APP_DB_USER: codex_app
+          APP_DB_PASSWORD: codex_ci_app
+        run: sh docker/postgres/init/01-app-role.sh
+
+      - name: Build shared packages and generate the Prisma client
+        run: pnpm exec turbo run build db:generate --filter=@codex/api^... --filter=@codex/api
+
+      - name: Apply migrations
+        run: pnpm db:migrate:deploy
+
+      - name: Check the schema matches the migrations
+        working-directory: apps/api
+        run: pnpm exec prisma migrate diff --from-config-datasource --to-schema prisma/schema.prisma --exit-code
+
+      - name: Seed twice (must be idempotent)
+        env:
+          PGHOST: localhost
+          PGPASSWORD: codex_ci_owner
+        run: |
+          count_rows() {
+            psql -U codex_ci -d codex -tA -c "select (select count(*) from users), (select count(*) from services), (select count(*) from projects), (select count(*) from posts), (select count(*) from media), (select count(*) from site_settings)"
+          }
+          pnpm db:seed
+          first="$(count_rows)"
+          pnpm db:seed
+          second="$(count_rows)"
+          echo "after first run: $first / after second run: $second"
+          test "$first" = "1|3|6|3|39|1"
+          test "$first" = "$second"
+
+      # Unit + integration suites with coverage; fails under 80% on services (docs/phases/03 §9).
+      - name: Integration tests and service coverage
+        run: pnpm test:coverage

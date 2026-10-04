@@ -1,0 +1,47 @@
+{
+  "$schema": "https://turborepo.com/schema.json",
+  "extends": ["//"],
+  "tasks": {
+    "build": {
+      "env": [
+        "NEXT_PUBLIC_*",
+        "API_URL",
+        "INTERNAL_API_TOKEN",
+        "REVALIDATE_SECRET",
+        "ENABLE_UI_SHOWCASE"
+      ],
+      "inputs": ["$TURBO_DEFAULT$", "!**/*.test.{ts,tsx}", ".env*"]
+    },
+    "typecheck": {
+      "env": [
+        "NEXT_PUBLIC_*",
+        "API_URL",
+        "INTERNAL_API_TOKEN",
+        "REVALIDATE_SECRET",
+        "ENABLE_UI_SHOWCASE"
+      ],
+      "inputs": ["$TURBO_DEFAULT$", ".env*"]
+    },
+    "dev": {
+      "env": [
+        "NEXT_PUBLIC_*",
+        "API_URL",
+        "INTERNAL_API_TOKEN",
+        "REVALIDATE_SECRET",
+        "ENABLE_UI_SHOWCASE"
+      ]
+    },
+    "test:e2e": {
+      "dependsOn": ["build"],
+      "cache": false,
+      "passThroughEnv": ["CI", "PLAYWRIGHT_BROWSERS_PATH"],
+      "env": [
+        "NEXT_PUBLIC_*",
+        "API_URL",
+        "INTERNAL_API_TOKEN",
+        "REVALIDATE_SECRET",
+        "ENABLE_UI_SHOWCASE"
+      ]
+    }
+  }
+}
